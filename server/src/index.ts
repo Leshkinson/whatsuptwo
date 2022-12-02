@@ -14,7 +14,6 @@ app.use(cors());
 app.use(cookieParser());
 app.use(bodyParser.json());
 
-
 postgresDataBase.initialize()
     .then(() => {
         console.log("Data Source has been initialized!")
@@ -24,9 +23,7 @@ postgresDataBase.initialize()
 
 app.use('/', router);
 
-
-
-const start = ():void => {
+const start = (): void => {
     const PORT = process.env.PORT || 3001
     try {
         app.listen(PORT, () => console.log(`Server has been started on http://localhost:${PORT}`));

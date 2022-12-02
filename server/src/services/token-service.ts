@@ -15,17 +15,35 @@ export class TokenService {
         this.options = authConfig.signOptions
     }
 
-    generateToken(payload:object):string {
-        return jwt.sign(payload, this.secret, this.options )
-
+    generateToken(payload: object): string {
+        return jwt.sign(payload, this.secret, this.options);
     }
 
-    async saveToken(id: number, token: string){
-        const tokenData = await postgresDataBase.getRepository(TokenEntity).findOneById(id)
+    async findToken(token: string) {
+        return await postgresDataBase.getRepository(TokenEntity).findOne({where: {token: token}});
+    }
+
+    async saveToken(userId: number, token: string) {
+        const tokenData = await this.findToken(token)
         if (tokenData) {
-            return await postgresDataBase.getRepository(TokenEntity).save({token: token})
+            return await postgresDataBase.getRepository(TokenEntity).insert({
+                token: token,
+                userId: userId,
+            })
         }
-        return await postgresDataBase.getRepository(TokenEntity).save({token: token});
+
+        return await postgresDataBase.getRepository(TokenEntity).save({
+            token: token,
+            userId: userId,
+        });
     }
 
+    async removeToken(token: string) {
+        const removeToken: TokenEntity | null = await this.findToken(token)
+        if (!removeToken) {
+            throw new Error('Token not find')
+        }
+
+        return await postgresDataBase.getRepository(TokenEntity).delete({token: token});
+    }
 }

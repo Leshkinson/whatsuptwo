@@ -42,11 +42,12 @@ class ConfigService {
             password: this.getValue("POSTGRES_PASSWORD"),
             database: this.getValue("POSTGRES_DATABASE"),
 
-            entities: this.getEntitiesArray(),
+            //entities: this.getEntitiesArray(),
+            entities: ["dist/entity/*{.js,.ts}"],
 
             migrationsTableName: "migration",
 
-            migrations: ["src/migration/*.ts"],
+            migrations: ["dist/migration/*{.js,.ts}"],
 
             migrationsRun: true,
             synchronize: true,
@@ -101,7 +102,7 @@ const databaseConfigService = new ConfigService(process.env)
         "POSTGRES_PORT",
         "POSTGRES_USER",
         "POSTGRES_PASSWORD",
-        "POSTGRES_DB"
+        "POSTGRES_DATABASE"
     ]);
 
 const authConfigService = new ConfigService(process.env)

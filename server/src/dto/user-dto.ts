@@ -6,16 +6,12 @@ interface Model {
 }
 
 export class UserDto {
-    id;
-    email;
-    //password;
-    isActivated;
+    id: number;
+    email: string;
+    isActivated: boolean;
 
     constructor(model: Model) {
-        this.id = model.id;
         this.email = model.email;
-        //this.password = model.password;
         this.isActivated = model.isActivated;
-
     }
 }

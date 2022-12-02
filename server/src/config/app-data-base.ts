@@ -1,7 +1,5 @@
 import {DataSource} from 'typeorm';
 import dotenv from 'dotenv';
-// import {TokenEntity} from "../entity/token.entity";
-// import {UserEntity} from "../entity/user.entity";
 import {databaseConfigService} from "./config.service"
 dotenv.config();
 
