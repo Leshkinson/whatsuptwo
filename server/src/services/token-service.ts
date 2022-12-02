@@ -1,7 +1,7 @@
 import jwt, {SignOptions} from 'jsonwebtoken';
 import {authConfigService} from '../config/config.service';
 import {TokenEntity} from '../entity/token.entity';
-import {postgresDataBase} from "../config/app-data-base";
+import {postgresDataBase} from "../index";
 
 
 export class TokenService {

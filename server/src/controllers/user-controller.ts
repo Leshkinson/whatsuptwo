@@ -7,8 +7,9 @@ export class UserController {
     static async registration(req: Request, res: Response) {
         try {
             const {email, password} = req.body;
-            const userData = await UserService.registration(email, password);
-            res.cookie('token', userData, {maxAge: 30 * 60 * 1000, httpOnly: true});
+            const userService = new UserService();
+            const userData = await userService.registration(email, password);
+            res.cookie('token', userData.token, {maxAge: 30 * 60 * 1000, httpOnly: true});
 
             return res.status(201).json(userData)
 
@@ -22,10 +23,13 @@ export class UserController {
     static async login(req: Request, res: Response) {
         try {
             const {email, password} = req.body;
-            const token = await UserService.login(email, password);
-            res.cookie('token', token, {maxAge: 30 * 60 * 1000, httpOnly: true});
 
-            return res.sendStatus(201);
+            const userService = new UserService();
+            const token = await userService.login(email, password);
+
+            return res
+                .cookie('token', token, {maxAge: 30 * 60 * 1000, httpOnly: true})
+                .sendStatus(201);
 
         } catch (error: any) {
             console.log(error.message)
@@ -50,7 +54,9 @@ export class UserController {
     static async activated(req: Request, res: Response) {
         try {
             const activationLink = req.params.link;
-            await UserService.activated(activationLink);
+            const userService = new UserService();
+
+            await userService.activated(activationLink);
             // @ts-ignore
             return res.redirect(process.env.CLIENT_URL)
         } catch (error: any) {

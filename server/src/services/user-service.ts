@@ -1,45 +1,55 @@
-import {postgresDataBase} from "../config/app-data-base";
-import {UserEntity} from "../entity/user.entity";
 import bcrypt from 'bcrypt';
 import {v4 as uuidv4} from 'uuid'
 import {MailerService} from './mail-service';
 import {TokenService} from "./token-service";
 import {UserDto} from "../dto/user-dto";
+import {UserRepository} from "../repositories/user-repository";
+import {TokenMapper} from "../dto/mapper/token-mapper";
 
 export class UserService {
-    static async registration(email: string, password: string) {
-        const applicant = await postgresDataBase.getRepository(UserEntity).findOneBy({email: email})
+    constructor() {
+        this.userRepository = new UserRepository();
+    }
+
+    private readonly userRepository: UserRepository;
+
+    async registration(email: string, password: string) {
+        // const userRepository = new UserRepository()
+        const applicant = await this.userRepository.findByEmail(email)
+        //const applicant = await postgresDataBase.getRepository(UserEntity).findOneBy({email: email})
         if (applicant) {
             throw new Error('User with this email address already exists')
         }
-        const hashPassword = await bcrypt.hash(password, 5)
+
         const activationLink = uuidv4();
-        const user = await postgresDataBase.getRepository(UserEntity).save({
+        const hashPassword = await bcrypt.hash(password, 5)
+        const user = await this.userRepository.createUser({
             email: email,
             password: hashPassword,
             activationLink: activationLink
         });
+
         const creatorToken = new TokenService()
-        await MailerService.sendNotificationToEmail(email, `${process.env.API_URL}api/activated/${activationLink}`);
-        const userDto = new UserDto(user);
-        const token = creatorToken.generateToken({...userDto});
+        const token = creatorToken.generateToken(TokenMapper.prepareEntity(user));
         await creatorToken.saveToken(user.id, token);
+
+        await MailerService.sendNotificationToEmail(email, `${process.env.API_URL}api/activated/${activationLink}`);
 
         return {token, user: UserDto};
     }
 
-    static async activated(activationLink: string) {
-        const user = await postgresDataBase.getRepository(UserEntity).findOneBy({activationLink: activationLink})
+    async activated(activationLink: string) {
+        const user = await this.userRepository.findByLink(activationLink);
         if (!user) {
             throw new Error("User undefined")
         }
 
         user.isActivated = true;
-        await postgresDataBase.getRepository(UserEntity).save(user);
+        await this.userRepository.updateUser(user);
     }
 
-    static async login(email: string, password: string) {
-        const user = await postgresDataBase.getRepository(UserEntity).findOneBy({email: email})
+    async login(email: string, password: string) {
+        const user = await this.userRepository.findByEmail(email)
         if (!user) {
             throw new Error('User undefined')
         }

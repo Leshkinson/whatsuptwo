@@ -15,3 +15,9 @@ export class UserDto {
         this.isActivated = model.isActivated;
     }
 }
+
+export interface CreateUserDto {
+    email: string;
+    password: string;
+    activationLink: string;
+}

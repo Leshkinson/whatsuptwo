@@ -3,16 +3,19 @@ import dotenv from 'dotenv';
 import bodyParser from "body-parser";
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
-import {postgresDataBase} from './config/app-data-base'
 import {router} from "./router/router";
+import {DataSource} from "typeorm";
+import {databaseConfigService} from "./config/config.service";
 
 dotenv.config();
 
 const app = express();
+export const postgresDataBase = new DataSource(databaseConfigService.getTypeOrmConfig())
 
 app.use(cors());
 app.use(cookieParser());
 app.use(bodyParser.json());
+
 
 postgresDataBase.initialize()
     .then(() => {
