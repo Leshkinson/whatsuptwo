@@ -1,11 +1,12 @@
-import nodemailer from "nodemailer";
 import dotenv from "dotenv";
-import {mailerConfigService} from "./config.service";
+import nodemailer from "nodemailer";
 import {Options} from "nodemailer/lib/mailer";
+import {mailerConfigService} from "./config.service";
 
 dotenv.config()
-const host = process.env.SMTP_HOST
-if(!host){
+
+const host = process.env.SMTP_HOST;
+if (!host) {
     throw new Error('HOST is not set');
 }
 
@@ -19,14 +20,14 @@ export class MailService {
         );
     }
 
-    public send(message: Options){
+    public send(message: Options) {
         this.provider.sendMail(message, (err, info) => {
             if (err) return console.log(err.message)
             console.log('Email sent: ', info);
         });
     }
 }
-//
+
 // export const transporter = nodemailer.createTransport(
 //     {
 //         host: String(process.env.SMTP_HOST),

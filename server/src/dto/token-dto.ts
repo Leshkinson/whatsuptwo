@@ -1,4 +1,4 @@
 export interface CreateTokenDto {
-    email: string
-    isActivated: boolean;
+    token: string;
+    userId: number
 }

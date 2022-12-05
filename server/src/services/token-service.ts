@@ -1,18 +1,21 @@
-import jwt, {SignOptions} from 'jsonwebtoken';
-import {authConfigService} from '../config/config.service';
-import {TokenEntity} from '../entity/token.entity';
-import {postgresDataBase} from "../index";
+import jwt, {SignOptions} from "jsonwebtoken";
+import {TokenEntity} from "../entity/token.entity";
+import {authConfigService} from "../config/config.service";
+import {TokenRepository} from "../repositories/token-repository";
 
 
 export class TokenService {
 
-    private readonly secret: string
-    private readonly options: SignOptions
+    private readonly secret: string;
+    private readonly options: SignOptions;
+    private tokenRepository: TokenRepository;
 
     constructor() {
-        const authConfig = authConfigService.getAuthConfig()
-        this.secret = authConfig.secret
-        this.options = authConfig.signOptions
+        const authConfig = authConfigService.getAuthConfig();
+        this.tokenRepository = new TokenRepository();
+        this.options = authConfig.signOptions;
+        this.secret = authConfig.secret;
+
     }
 
     generateToken(payload: object): string {
@@ -20,30 +23,30 @@ export class TokenService {
     }
 
     async findToken(token: string) {
-        return await postgresDataBase.getRepository(TokenEntity).findOne({where: {token: token}});
+        return this.tokenRepository.findByToken(token);
     }
 
     async saveToken(userId: number, token: string) {
-        const tokenData = await this.findToken(token)
+        const tokenData = await this.tokenRepository.findByToken(token)
         if (tokenData) {
-            return await postgresDataBase.getRepository(TokenEntity).insert({
+            return await this.tokenRepository.rewriteToken({
                 token: token,
                 userId: userId,
             })
         }
 
-        return await postgresDataBase.getRepository(TokenEntity).save({
+        return await this.tokenRepository.createToken({
             token: token,
             userId: userId,
         });
     }
 
     async removeToken(token: string) {
-        const removeToken: TokenEntity | null = await this.findToken(token)
+        const removeToken: TokenEntity | null = await this.tokenRepository.findByToken(token);
         if (!removeToken) {
             throw new Error('Token not find')
         }
 
-        return await postgresDataBase.getRepository(TokenEntity).delete({token: token});
+        return await this.tokenRepository.deleteToken({token: token});
     }
 }

@@ -1,10 +1,10 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import bodyParser from "body-parser";
-import cookieParser from 'cookie-parser';
-import cors from 'cors';
-import {router} from "./router/router";
+import cors from "cors";
+import dotenv from "dotenv";
+import express from "express";
 import {DataSource} from "typeorm";
+import bodyParser from "body-parser";
+import {router} from "./router/router";
+import cookieParser from "cookie-parser";
 import {databaseConfigService} from "./config/config.service";
 
 dotenv.config();
@@ -12,7 +12,7 @@ dotenv.config();
 const app = express();
 export const postgresDataBase = new DataSource(databaseConfigService.getTypeOrmConfig())
 
-app.use(cors());
+app.use(cors({ credentials:true, origin:'http://localhost:3000' }));
 app.use(cookieParser());
 app.use(bodyParser.json());
 
@@ -27,7 +27,7 @@ postgresDataBase.initialize()
 app.use('/', router);
 
 const start = (): void => {
-    const PORT = process.env.PORT || 3001
+    const PORT = process.env.PORT || 3001;
     try {
         app.listen(PORT, () => console.log(`Server has been started on http://localhost:${PORT}`));
     } catch (error: any) {

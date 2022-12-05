@@ -1,32 +1,29 @@
-import {UserEntity} from "../entity/user.entity";
-import {postgresDataBase} from '../index'
-import {Repository} from "typeorm/repository/Repository";
+import {postgresDataBase} from "../index";
 import {CreateUserDto} from "../dto/user-dto";
+import {UserEntity} from "../entity/user.entity";
+import {Repository} from "typeorm/repository/Repository";
+
 
 export class UserRepository {
-    private postgresDataBase: Repository<UserEntity>;
+    private userTable: Repository<UserEntity>;
 
     constructor() {
-        this.postgresDataBase = postgresDataBase.getRepository(UserEntity);
+        this.userTable = postgresDataBase.getRepository(UserEntity);
     }
 
     async findByEmail(email: string): Promise<UserEntity | null> {
-        return this.postgresDataBase.findOneBy({email: email});
+        return this.userTable.findOneBy({email: email});
     }
 
     async findByLink(link: string): Promise<UserEntity | null> {
-        return this.postgresDataBase.findOneBy({activationLink: link});
+        return this.userTable.findOneBy({activationLink: link});
     }
 
     async createUser(userData: CreateUserDto): Promise<UserEntity> {
-        return this.postgresDataBase.save(userData);
+        return this.userTable.save(userData);
     }
 
     async updateUser(userData: UserEntity): Promise<UserEntity> {
-        return this.postgresDataBase.save(userData);
-    }
-
-    async saveDataIntoDataBase(data: object) {
-        await this.postgresDataBase.save(data)
+        return this.userTable.save(userData);
     }
 }

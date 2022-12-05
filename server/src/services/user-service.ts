@@ -1,39 +1,41 @@
-import bcrypt from 'bcrypt';
-import {v4 as uuidv4} from 'uuid'
+import bcrypt from "bcrypt";
+import {v4 as uuidv4} from "uuid";
+import {UserDto} from "../dto/user-dto";
 import {MailerService} from './mail-service';
 import {TokenService} from "./token-service";
-import {UserDto} from "../dto/user-dto";
-import {UserRepository} from "../repositories/user-repository";
 import {TokenMapper} from "../dto/mapper/token-mapper";
+import {UserRepository} from "../repositories/user-repository";
+
 
 export class UserService {
+
     constructor() {
         this.userRepository = new UserRepository();
+
     }
 
     private readonly userRepository: UserRepository;
 
     async registration(email: string, password: string) {
-        // const userRepository = new UserRepository()
-        const applicant = await this.userRepository.findByEmail(email)
-        //const applicant = await postgresDataBase.getRepository(UserEntity).findOneBy({email: email})
+        const applicant = await this.userRepository.findByEmail(email);
         if (applicant) {
             throw new Error('User with this email address already exists')
         }
 
         const activationLink = uuidv4();
-        const hashPassword = await bcrypt.hash(password, 5)
+        const hashPassword = await bcrypt.hash(password, 5);
         const user = await this.userRepository.createUser({
             email: email,
             password: hashPassword,
             activationLink: activationLink
         });
 
-        const creatorToken = new TokenService()
-        const token = creatorToken.generateToken(TokenMapper.prepareEntity(user));
-        await creatorToken.saveToken(user.id, token);
+        const tokenService = new TokenService();
+        const token = tokenService.generateToken(TokenMapper.prepareEntity(user));
+        await tokenService.saveToken(user.id, token);
 
-        await MailerService.sendNotificationToEmail(email, `${process.env.API_URL}api/activated/${activationLink}`);
+        const mailService = new MailerService()
+        await mailService.sendNotificationToEmail(email, `${process.env.API_URL}api/activated/${activationLink}`);
 
         return {token, user: UserDto};
     }
@@ -60,9 +62,9 @@ export class UserService {
         }
 
         const userDto = new UserDto(user);
-        const creatorToken = new TokenService();
-        const token = creatorToken.generateToken({...userDto});
-        await creatorToken.saveToken(user.id, token);
+        const tokenService = new TokenService();
+        const token = tokenService.generateToken({...userDto});
+        await tokenService.saveToken(user.id, token);
 
         return token;
     }

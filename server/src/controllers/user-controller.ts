@@ -1,6 +1,7 @@
+import dotenv from "dotenv";
 import {Request, Response} from "express";
 import {UserService} from "../services/user-service";
-import dotenv from 'dotenv';
+
 dotenv.config();
 
 export class UserController {
@@ -11,12 +12,12 @@ export class UserController {
             const userData = await userService.registration(email, password);
             res.cookie('token', userData.token, {maxAge: 30 * 60 * 1000, httpOnly: true});
 
-            return res.status(201).json(userData)
+            return res.status(201).json(userData);
 
         } catch (error: any) {
-            console.log(error.message)
+            console.log(error.message);
 
-            return res.status(404).json('Email is busy')
+            return res.status(404).json('Email is busy');
         }
     }
 
@@ -32,22 +33,22 @@ export class UserController {
                 .sendStatus(201);
 
         } catch (error: any) {
-            console.log(error.message)
+            console.log(error.message);
 
-            return res.status(404).json('Login incorrect')
+            return res.status(404).json('Login incorrect');
         }
     }
 
     static async logout(req: Request, res: Response) {
         try {
-            const { token } = req.cookies;
-            const tokeN = await UserService.logout(token);
+            const {token} = req.cookies;
+            const deleteToken = await UserService.logout(token);
             res.clearCookie('token');
 
-            return res.json(tokeN);
+            return res.json(deleteToken);
 
         } catch (error: any) {
-            console.log(error.message)
+            console.log(error.message);
         }
     }
 
@@ -58,7 +59,7 @@ export class UserController {
 
             await userService.activated(activationLink);
             // @ts-ignore
-            return res.redirect(process.env.CLIENT_URL)
+            return res.redirect(process.env.CLIENT_URL);
         } catch (error: any) {
             console.log(error.message)
         }

@@ -1,5 +1,6 @@
-import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
 import {TokenEntity} from "./token.entity";
+import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from "typeorm";
+
 
 @Entity({name: "user"})
 export class UserEntity {
@@ -24,12 +25,4 @@ export class UserEntity {
     @OneToMany('TokenEntity',(token: TokenEntity) => token.user, {cascade: true, onDelete: "CASCADE", onUpdate: "CASCADE"})
     tokens: TokenEntity[];
 
-    // addToken(token: TokenEntity) {
-    //     if(this.tokens == null) {
-    //         this.tokens = new Array<TokenEntity>();
-    //     }
-    //     this.tokens.push(token);
-    // }
-
-    //  add updatedAt
 }
