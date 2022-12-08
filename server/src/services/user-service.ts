@@ -61,9 +61,8 @@ export class UserService {
             throw new Error('Password incorrect')
         }
 
-        const userDto = new UserDto(user);
         const tokenService = new TokenService();
-        const token = tokenService.generateToken({...userDto});
+        const token = tokenService.generateToken(TokenMapper.prepareEntity(user));
         await tokenService.saveToken(user.id, token);
 
         return token;

@@ -12,9 +12,9 @@ dotenv.config();
 const app = express();
 export const postgresDataBase = new DataSource(databaseConfigService.getTypeOrmConfig())
 
-app.use(cors({ credentials:true, origin:'http://localhost:3000' }));
-app.use(cookieParser());
 app.use(bodyParser.json());
+app.use(cookieParser());
+app.use(cors({ credentials: true, origin:'http://localhost:3000' }));
 
 
 postgresDataBase.initialize()

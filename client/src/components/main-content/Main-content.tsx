@@ -7,7 +7,7 @@ function MainContent() {
     return (
 
         <main className='main'>
-            <AuthForm></AuthForm>
+            <AuthForm/>
         </main>
     )
 }
