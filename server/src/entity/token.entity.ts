@@ -17,7 +17,7 @@ export class TokenEntity {
     userId: number;
 
     //@Column({name: "user_id"})
-    @ManyToOne(() => UserEntity, user => user.tokens)
+    @ManyToOne(() => UserEntity, user => user.tokens,{cascade: true, onDelete: "CASCADE", onUpdate: "CASCADE"})
     @JoinColumn({name: "user_id"})
 
     user: UserEntity;

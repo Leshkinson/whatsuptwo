@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import {UserEntity} from "../entity/user.entity";
 import {TokenEntity} from "../entity/token.entity";
 import {PostgresConnectionOptions} from "typeorm/driver/postgres/PostgresConnectionOptions";
+import {StrategyOptions} from "passport-google-oauth20";
 dotenv.config();
 
 class ConfigService {
@@ -72,6 +73,10 @@ class ConfigService {
         };
     }
 
+    public getAuthSecret() {
+        return this.getValue("JWT_ACCESS_SECRET")
+    }
+
 
     public getMailerConfig() {
         return {
@@ -82,6 +87,15 @@ class ConfigService {
                 user: this.getValue("EMAIL_ADDRESS"),
                 pass: this.getValue("EMAIL_PASSWORD")
             }
+        }
+    }
+
+    public getGoogleStrategyConfig():StrategyOptions {
+        return {
+            clientID: this.getValue("GOOGLE_CLIENT_ID"),
+            clientSecret: this.getValue("GOOGLE_CLIENT_SECRET"),
+            callbackURL: this.getValue("CALL_BACK_URL"),
+            passReqToCallback: false
         }
     }
 
@@ -119,8 +133,16 @@ const mailerConfigService = new ConfigService(process.env)
         "EMAIL_PASSWORD",
     ]);
 
+const googleConfigService = new ConfigService(process.env)
+    .ensureValues([
+    "GOOGLE_CLIENT_ID",
+    "GOOGLE_CLIENT_SECRET",
+    "CALL_BACK_URL",
+])
+
 export {
     databaseConfigService,
     authConfigService,
     mailerConfigService,
+    googleConfigService,
 };

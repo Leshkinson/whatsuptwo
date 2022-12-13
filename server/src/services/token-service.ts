@@ -49,4 +49,12 @@ export class TokenService {
 
         return await this.tokenRepository.deleteToken({token: token});
     }
+
+    async validateToken(token: string) {
+        try{
+            return jwt.verify(token, authConfigService.getAuthSecret());
+        } catch (e) {
+            return null
+        }
+    }
 }

@@ -1,8 +1,10 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+import passport from "passport";
 import {DataSource} from "typeorm";
 import bodyParser from "body-parser";
+import session from "express-session";
 import {router} from "./router/router";
 import cookieParser from "cookie-parser";
 import {databaseConfigService} from "./config/config.service";
@@ -15,6 +17,11 @@ export const postgresDataBase = new DataSource(databaseConfigService.getTypeOrmC
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cors({ credentials: true, origin:'http://localhost:3000' }));
+app.use(session({
+     secret: 'SECRET',
+     resave: false,
+     saveUninitialized: false,}))
+app.use(passport.initialize());
 
 
 postgresDataBase.initialize()

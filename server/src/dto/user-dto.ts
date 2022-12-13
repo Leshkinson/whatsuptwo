@@ -18,6 +18,7 @@ export class UserDto {
 
 export interface CreateUserDto {
     email: string;
-    password: string;
-    activationLink: string;
+    password: string | null;
+    activationLink: string | null;
+    isActivated?: boolean
 }

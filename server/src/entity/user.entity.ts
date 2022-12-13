@@ -10,11 +10,11 @@ export class UserEntity {
     @Column({ unique: true})
     email: string;
 
-    @Column()
-    password: string;
+    @Column({ type: 'character varying' || 'integer', nullable: true })
+    password: string | null;
 
-    @Column()
-    activationLink: string;
+    @Column({ type: 'character varying' || 'integer', nullable: true })
+    activationLink: string | null;
 
     @Column({default: false})
     isActivated: boolean;
@@ -22,7 +22,7 @@ export class UserEntity {
     @Column({default: new Date(), type: "timestamptz"})
     createdAt: Date;
 
-    @OneToMany('TokenEntity',(token: TokenEntity) => token.user, {cascade: true, onDelete: "CASCADE", onUpdate: "CASCADE"})
+    @OneToMany('TokenEntity',(token: TokenEntity) => token.user)
     tokens: TokenEntity[];
 
 }
