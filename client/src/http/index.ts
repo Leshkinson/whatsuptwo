@@ -7,13 +7,16 @@ export const API_URL = 'http://localhost:2022/api'
 
 const $api = axios.create({
     withCredentials: true,
-    baseURL: API_URL
+    baseURL: API_URL,
+    headers: {
+        'Access-Control-Allow-Origin': '*'
+    },
 })
 
-$api.interceptors.request.use((config): AxiosRequestConfig => {
+$api.interceptors.request.use((config: AxiosRequestConfig) => {
     config.headers = config.headers ?? {}
-    //config.headers.Authorisation = `Bearer ${localStorage.getItem('token')}`
-    config.headers.Authorisation = sessionStorage.getItem('token')
+    //config.headers.Authorization = `Bearer ${localStorage.getItem('token')}`
+    //config.headers.Authorization = sessionStorage.getItem('token')
     return config
 })
 
@@ -26,7 +29,7 @@ $api.interceptors.response.use((config) => {
         originalRequest._isRetry = true;
         try {
             const response = await axios.get<AuthResponse>(`${API_URL}/refresh`, {withCredentials: true})
-            localStorage.setItem('token', response.data.token);
+            sessionStorage.setItem('token', response.data.token);
             return $api.request(originalRequest);
         } catch (e) {
             console.log('НЕ АВТОРИЗОВАН')

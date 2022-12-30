@@ -67,6 +67,18 @@ export default class Store {
         }
     }
 
+    async registrationByGoogle() {
+        try {
+            const response = await AuthService.registrationByGoogle();
+            sessionStorage.setItem('token', response.data.token);
+            this.setAuth(true);
+            this.setUser(response.data.user);
+        } catch (error) {
+            // @ts-ignore
+            console.log(error.response?.data?.message)
+        }
+    }
+
 
     // async checkAuth() {
     //     this.setLoading(true);

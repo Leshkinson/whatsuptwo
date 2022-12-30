@@ -1,8 +1,6 @@
 import {NextFunction, Request, Response} from "express";
 import {myValidationResult} from "../validator/validator";
 
-
-
 export const isErrorMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const errors = myValidationResult(req);
     if (!errors.isEmpty()) {

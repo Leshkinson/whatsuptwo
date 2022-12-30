@@ -8,15 +8,13 @@ import {UserRepository} from "../repositories/user-repository";
 
 
 export class UserService {
-
     constructor() {
         this.userRepository = new UserRepository();
-
     }
 
     private readonly userRepository: UserRepository;
 
-    async registration(email: string, password: string) {
+    async registration(email: string, password: string, nickName: string) {
         const applicant = await this.userRepository.findByEmail(email);
         if (applicant) {
             throw new Error('User with this email address already exists')
@@ -26,6 +24,7 @@ export class UserService {
         const user = await this.userRepository.createUser({
             email: email,
             password: hashPassword,
+            nickName: nickName,
             activationLink: activationLink,
         });
         const tokenService = new TokenService();
@@ -36,10 +35,9 @@ export class UserService {
         await mailService.sendNotificationToEmail(email, `${process.env.API_URL}api/activated/${activationLink}`);
 
         return {token, user: UserDto};
-
     }
 
-    async registrationByGoogle(email: string) {
+    async registrationByGoogle(email: string, nickName: string) {
         const applicant = await this.userRepository.findByEmail(email);
         if (applicant) {
             throw new Error('User with this email address already exists')
@@ -48,6 +46,7 @@ export class UserService {
         const user = await this.userRepository.createUser({
             email: email,
             password: null,
+            nickName: nickName,
             activationLink: null,
             isActivated: true,
         });

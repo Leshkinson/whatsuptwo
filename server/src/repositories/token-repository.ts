@@ -4,7 +4,6 @@ import {TokenEntity} from "../entity/token.entity";
 import {DeleteResult, InsertResult} from "typeorm";
 import {Repository} from "typeorm/repository/Repository";
 
-
 export class TokenRepository {
     private tokenTable: Repository<TokenEntity>
 

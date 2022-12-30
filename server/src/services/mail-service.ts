@@ -1,7 +1,6 @@
 import {MailService} from "../config/mail-transporte";
 import {userInvitationTemplate} from "./mailTemplates/user-invitation";
 
-
 export class MailerService {
 
     async sendNotificationToEmail(to: string, link: string) {

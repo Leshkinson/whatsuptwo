@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import {UserEntity} from "../entity/user.entity";
 import {TokenEntity} from "../entity/token.entity";
+import{MessageEntity} from "../entity/message.entity";
 import {StrategyOptions} from "passport-google-oauth20";
 import {PostgresConnectionOptions} from "typeorm/driver/postgres/PostgresConnectionOptions";
 import {Secret, SignOptions} from "jsonwebtoken";
@@ -127,6 +128,7 @@ class ConfigService {
         return [
             UserEntity,
             TokenEntity,
+            MessageEntity,
         ];
     }
 

@@ -3,7 +3,6 @@ import {CreateUserDto} from "../dto/user-dto";
 import {UserEntity} from "../entity/user.entity";
 import {Repository} from "typeorm/repository/Repository";
 
-
 export class UserRepository {
     private userTable: Repository<UserEntity>;
 
@@ -17,6 +16,10 @@ export class UserRepository {
 
     async findByLink(link: string): Promise<UserEntity | null> {
         return this.userTable.findOneBy({activationLink: link});
+    }
+
+    async findByNickName(nickName: string): Promise<UserEntity | null> {
+        return this.userTable.findOneBy({nickName: nickName});
     }
 
     async createUser(userData: CreateUserDto): Promise<UserEntity> {

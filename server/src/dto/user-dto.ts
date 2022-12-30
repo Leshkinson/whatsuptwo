@@ -19,6 +19,16 @@ export class UserDto {
 export interface CreateUserDto {
     email: string;
     password: string | null;
+    nickName: string;
     activationLink: string | null;
-    isActivated?: boolean
+    isActivated?: boolean;
+}
+
+export interface CreateMessageDto {
+    messageId: number;
+    messageType: string;
+    textOrPathToFile: string;
+    roomId: string;
+    userId: number;
+    userName: string;
 }

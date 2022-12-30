@@ -16,4 +16,8 @@ export default class AuthService {
     static async logout():Promise<void> {
         return $api.post('/logout')
     }
+
+    static async registrationByGoogle():Promise<AxiosResponse<AuthResponse>> {
+        return $api.get('/google')
+    }
 }

@@ -1,12 +1,11 @@
-import jwt, {SignOptions} from "jsonwebtoken";
+import jwt, {Secret, SignOptions} from "jsonwebtoken";
 import {TokenEntity} from "../entity/token.entity";
 import {authConfigService} from "../config/config.service";
 import {TokenRepository} from "../repositories/token-repository";
 
-
 export class TokenService {
 
-    private readonly secret: string;
+    private readonly secret: Secret;
     private readonly options: SignOptions;
     private tokenRepository: TokenRepository;
 
@@ -15,7 +14,6 @@ export class TokenService {
         this.tokenRepository = new TokenRepository();
         this.options = authConfig.signOptions;
         this.secret = authConfig.secret;
-
     }
 
     generateToken(payload: object): string {

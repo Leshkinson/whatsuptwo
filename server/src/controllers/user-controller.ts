@@ -1,7 +1,8 @@
 import dotenv from "dotenv";
 import {Request, Response} from "express";
-import {UserService} from "../services/user-service";
 import {GoogleRequest} from "../dto/token-dto";
+import {UserService} from "../services/user-service";
+import {clientConfigService} from "../config/config.service";
 
 dotenv.config();
 
@@ -28,10 +29,11 @@ export class UserController {
 
             const userService = new UserService();
             const token = await userService.login(email, password);
+            //res.clearCookie('token');
+            res.cookie('token', token, {maxAge: 30 * 60 * 1000, httpOnly: true});
 
-            return res
-                .cookie('token', token, {maxAge: 30 * 60 * 1000, httpOnly: true})
-                .sendStatus(201);
+            return res.status(201)
+                .redirect(clientConfigService.getClientUrl());
 
         } catch (error: any) {
             console.log(error.message);
@@ -60,8 +62,8 @@ export class UserController {
             const userService = new UserService();
 
             await userService.activated(activationLink);
-            // @ts-ignore
-            return res.redirect(process.env.CLIENT_URL);
+
+            return res.redirect(clientConfigService.getClientUrl());
         } catch (error: any) {
             console.log(error.message)
         }
@@ -85,7 +87,8 @@ export class UserController {
                 const userData = await userService.registrationByGoogle(email);
                 res.cookie('token', userData.token, {maxAge: 30 * 60 * 1000, httpOnly: true});
 
-                return res.status(201).json(userData);
+                return res.status(204)
+                    // .redirect(clientConfigService.getClientUrl());
             }
         } catch (error: any) {
             console.log(error.message)
