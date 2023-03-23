@@ -7,6 +7,5 @@ export class MailerService {
         let sendMessage = userInvitationTemplate(to, link)
         const transporter = new MailService();
         transporter.send(sendMessage);
-
     }
 }
